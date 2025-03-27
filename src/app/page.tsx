@@ -35,8 +35,8 @@ const TranslatePage = () => {
         body: { context, toLanguage }
       })
     } catch (error) {
-      const message = (error as Error).message || 'Something went wrong'
-      toast.error(message)
+      const message = (error as Error).message
+      toast.error(message || 'Something went wrong')
     }
   }
 
@@ -135,7 +135,7 @@ const TranslatePage = () => {
             <div className="flex-1 border border-neutral-400 dark:border-gray-500 relative group overflow-y-auto">
               <MarkdownPreview
                 source={completion}
-                className="h-full p-2 !text-[15px] !bg-white dark:!bg-[#141416] dark:!text-neutral-100 overflow-y-auto"
+                className="!max-w-[680px] h-full p-2 !text-[15px] !bg-white dark:!bg-[#141416] dark:!text-neutral-100 overflow-y-auto"
               />
               <ShareButton
                 content={completion}

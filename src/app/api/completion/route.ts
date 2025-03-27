@@ -18,14 +18,14 @@ export const POST = async (req: Request) => {
       async execute(dataStream) {
         const result = streamText({
           model: openai('google/gemini-2.5-pro-exp-03-25:free'),
+          abortSignal: AbortSignal.timeout(100000),
+          maxTokens: 100000,
           temperature: 0.2,
           prompt: content
         })
 
         result.mergeIntoDataStream(dataStream)
-      },
-      status: 200,
-      statusText: 'OK'
+      }
     })
   } catch (error) {
     const message = (error as Error).message || 'Something went wrong'
