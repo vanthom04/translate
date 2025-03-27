@@ -24,5 +24,5 @@ Please follow the context of the light novel when translating.
 
 **Text to Translate:** ${content}
 
-**Output Content:** DO NOT change any line breaks or paragraph breaks. If the paragraph seems too short and you want to join it with the next paragraph, DO NOT do that. Two paragraphs in the unknown language MUST be translated to two separate paragraphs in ${toLanguage}. Provide the complete translation, including any necessary footnotes or translator's notes, without additional commentary.
+**Output Content:** DO NOT change any line breaks or paragraph breaks. If the paragraph seems too short and you want to join it with the next paragraph, DO NOT do that. Two paragraphs in the unknown language MUST be translated to two separate paragraphs in ${toLanguage}. Provide the complete translation, including any necessary footnotes or translator's notes, without additional commentary. In your reply message, do not add anything other than the translation. Do not add any extra words or sentences.
 `

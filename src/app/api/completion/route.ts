@@ -17,7 +17,8 @@ export const POST = async (req: Request) => {
     return createDataStreamResponse({
       async execute(dataStream) {
         const result = streamText({
-          model: openai('google/gemini-2.0-pro-exp-02-05:free'),
+          model: openai('google/gemini-2.5-pro-exp-03-25:free'),
+          temperature: 0.2,
           prompt: content
         })
 
