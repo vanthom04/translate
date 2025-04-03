@@ -2,9 +2,10 @@
 
 import { z } from 'zod'
 import { toast } from 'sonner'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useCompletion } from '@ai-sdk/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import MarkdownPreview from '@uiw/react-markdown-preview'
 
 import { cn } from '@/lib/utils'
@@ -12,11 +13,15 @@ import { Button } from '@/components/ui/button'
 import { schemaTranslateNovel } from '@/schemas'
 import { Textarea } from '@/components/ui/textarea'
 import { ShareButton } from '@/components/share-button'
+import { buildTranslateNovelPrompt } from '@/lib/prompts'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_API_KEY!)
+
 const TranslatePage = () => {
-  const { complete, completion, isLoading } = useCompletion({ api: '/api/completion' })
+  const [completion, setCompletion] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof schemaTranslateNovel>>({
     resolver: zodResolver(schemaTranslateNovel),
@@ -29,14 +34,30 @@ const TranslatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof schemaTranslateNovel>) => {
     const { content, context, toLanguage } = values
+    setIsLoading(true)
+    setCompletion('')
 
     try {
-      await complete(content, {
-        body: { context, toLanguage }
+      const prompt = buildTranslateNovelPrompt(content, toLanguage, context)
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-1.5-pro',
+        generationConfig: {
+          candidateCount: 1,
+          temperature: 0.5
+        }
       })
+
+      const result = await model.generateContentStream(prompt, {
+        timeout: 60000 // 60 seconds timeout
+      })
+
+      const response = await result.response
+      setCompletion(response.text())
     } catch (error) {
       const message = (error as Error).message
       toast.error(message || 'Something went wrong')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -137,10 +158,7 @@ const TranslatePage = () => {
                 source={completion}
                 className="!max-w-[680px] h-full p-2 !text-[15px] !bg-white dark:!bg-[#141416] dark:!text-neutral-100 overflow-y-auto"
               />
-              <ShareButton
-                content={completion}
-                disabled={!completion || isLoading}
-              />
+              <ShareButton content={completion} disabled={!completion || isLoading} />
             </div>
           </div>
         </form>

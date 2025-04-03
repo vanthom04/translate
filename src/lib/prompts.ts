@@ -1,4 +1,4 @@
-export const buildTranslateNovelPrompt = (content: string, context: string, toLanguage: string) => `
+export const buildTranslateNovelPrompt = (content: string, toLanguage: string, context?: string) => `
 Translate the following light novel text into ${toLanguage}, ensuring the translation is accurate, natural-sounding, and preserves the spirit of the original work. Adhere to these guidelines:
 
 * **Tone and Style:** Maintain the author's writing style, including its tone (e.g., lighthearted, dramatic, formal) and narrative pacing.
